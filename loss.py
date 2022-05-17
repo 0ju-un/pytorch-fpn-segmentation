@@ -1,3 +1,7 @@
+# Slightly modified code from here:
+# https://github.com/qubvel/segmentation_models.pytorch
+# https://github.com/gasparian/multiclass-semantic-segmentation
+
 import os
 import numpy as np
 import logging
@@ -122,19 +126,6 @@ class Meter:
 
 
 class BCEDiceLoss:
-    """
-    Note that PyTorch optimizers minimize a loss. In this
-    case, we would like to maximize the dice loss so we
-    return the negated dice loss.
-    Args:
-        true: a tensor of shape [B, 1, H, W].
-        logits: a tensor of shape [B, C, H, W]. Corresponds to
-            the raw output or logits of the model.
-        eps: added to the denominator for numerical stability.
-    Returns:
-        dice_loss: loss.
-    """
-
     def __init__(self, bce_weight=1., weight=None, eps=1e-7,
                  smooth=.0, class_weights=[], threshold=0., activate=False):
 

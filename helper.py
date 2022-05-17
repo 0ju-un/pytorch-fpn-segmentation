@@ -1,9 +1,7 @@
 import os
-import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
-import torch.nn as nn
 
 ## 네트워크 저장하기
 def save(ckpt_dir, net, optim, epoch):

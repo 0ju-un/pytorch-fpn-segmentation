@@ -1,11 +1,7 @@
-import os
 import argparse
 import random
 import time
 
-import numpy as np
-
-import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, datasets, models
 
@@ -15,18 +11,17 @@ from dataset import MyDataset
 from FPN import FPN
 from loss import *
 
-from trainer import Trainer
-
 ## Parser 생성
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--batch_size", default=64, type=int, dest="batch_size")
+parser.add_argument("--batch_size", default=25, type=int, dest="batch_size")
 parser.add_argument("--num_workers", default=0, type=int, dest="num_workers")
+parser.add_argument("--n_class", default=3, type=int, dest="n_class")
 
 parser.add_argument("--root_dir", default="", type=str, dest="root_dir")
 
 parser.add_argument("--mode", default="FPN", type=str, dest="mode")
-parser.add_argument("--model_path", default="./ckpt_dir_2/best_model.pth", type=str, dest="model_path")
+parser.add_argument("--model_path", default="./ckpt_dir_/best_model.pth", type=str, dest="model_path")
 
 
 args = parser.parse_args()
@@ -41,14 +36,14 @@ num_workers = args.num_workers
 
 root_dir = args.root_dir
 data_dir = os.path.join(root_dir, 'dataset')
-ckpt_dir = os.path.join(root_dir, 'ckpt_dir_')
+ckpt_dir = os.path.join(root_dir, 'test_ckpt_dir')
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print(device)
 
 mode = args.mode
 backbone = "resnext50"
-model_path = os.path.join(ckpt_dir,"best_model.pth")
+model_path = args.model_path
+
 base_threshold = .0
 
 seed = 69
@@ -80,11 +75,10 @@ if mode=="FPN":
 
 ## 네트워크 불러오기
 model.to(device)
-
-state = torch.load(model_path,map_location=torch.device('cpu'))
-model.load_state_dict(state['state_dict'])
-
 model.eval()
+state = torch.load(model_path)
+
+model.load_state_dict(state['state_dict'])
 
 meter = Meter(ckpt_dir, base_threshold)
 
